@@ -25,6 +25,9 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Nation;
+import com.palmergames.bukkit.towny.object.Town;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.chat.plugins.Chat_DroxPerms;
 import net.milkbowl.vault.chat.plugins.Chat_GroupManager;
@@ -468,6 +471,31 @@ public class Vault extends JavaPlugin {
                 
             }
         }
+
+        for (Town town : TownyAPI.getInstance().getDataSource().getTowns()){
+            Bukkit.broadcastMessage(town.getName());
+            String account = "town-"+town.getName();
+            econ2.createPlayerAccount(account);
+            double diff = econ1.getBalance(account) - econ2.getBalance(account);
+            if (diff > 0) {
+                econ2.depositPlayer(account, diff);
+            } else if (diff < 0) {
+                econ2.withdrawPlayer(account, -diff);
+            }
+        }
+
+        for (Nation nation : TownyAPI.getInstance().getDataSource().getNations()){
+            Bukkit.broadcastMessage(nation.getName());
+            String account = "nation-"+nation.getName();
+            econ2.createPlayerAccount(account);
+            double diff = econ1.getBalance(account) - econ2.getBalance(account);
+            if (diff > 0) {
+                econ2.depositPlayer(account, diff);
+            } else if (diff < 0) {
+                econ2.withdrawPlayer(account, -diff);
+            }
+        }
+
         sender.sendMessage("Converson complete, please verify the data before using it.");
     }
 
